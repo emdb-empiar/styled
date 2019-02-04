@@ -52,3 +52,19 @@ class TestStyled(TestCase):
         # print()
         ss4 = "This text [[ 'blinks'|reverse:magenta ]]!"
         S5 = core.Styled(ss4)
+
+    def test_find_tokens(self):
+        s = """[[ 'a word'|red ]]"""
+        s = core.Styled(s)
+        self.assertItemsEqual(s._tokens, [(0, 18, 'a word', ['red'])])
+        s = core.Styled("""[[ 'your {} is open'|blue ]]""", 'bank')
+        self.assertItemsEqual(s._tokens, [(0, 30, 'your bank is open', ['blue'])])
+
+    def test_length(self):
+        u = 'I am the most handsome guy in the room.'
+        s = core.Styled("I am the most [[ 'handsome'|bold ]] guy in the room.")
+        print(s)
+        print(u)
+        print(s._plain)
+        print(s._unstyled)
+        self.assertEqual(len(u), len(s))
