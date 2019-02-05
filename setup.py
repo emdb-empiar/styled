@@ -5,7 +5,7 @@ with open("README.md") as fh:
 
 setup(
     name='styled',
-    version='0.1.0',
+    version='0.1.post0',
     packages=['styled'],
     url='',
     license='Apache 2.0',
@@ -13,4 +13,5 @@ setup(
     author_email='pkorir@ebi.ac.uk, paul.korir@gmail.com',
     description='Style your terminal with ease!',
     long_description=long_description,
+    long_description_content_type='text/markdown',
 )
