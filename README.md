@@ -6,16 +6,22 @@ anything other than the style names. Behind the scenes `styled` handles everythi
 your styles consistent and redundant and informing you when you have made formatting errors.
 
 `styled` was borne out of the frustration encountered in using other packages which muddle the boundary between
-_user-space_ and _design-space_. The user should be free to be a _user_ and it is the _designer_ job to hide the 
+_user-space_ and _design-space_. The user should be free to be a _user_ and it is the _designer's_ job to hide the 
 implementation behind a simple user interface that enables the user's task. This is what I've tried to do. If I have 
 failed to live up to this please let me know. I'm sure together we can come up with something better
 
 ## Getting Started
 
-Presently, `styled` is not yet on PyPI so you have to run
+To get the bleeding edge version of `styled` use
 
 ```bash
 pip install git+https://github.com/paulkorir/styled.git
+```
+
+and to get it from `TestPyPI` use
+
+```bash
+pip install -i https://test.pypi.org/simple/ styled
 ```
 
 It's best to do this in a virtual environment.
@@ -92,9 +98,9 @@ Traceback (most recent call last):
 styled.styled.StyleError: Unknown style 'underline'
 ```
 
-(In case you're wondering, it should have been _underline*d*_ not _underline_.)
+(In case you're wondering, it should have been `underlined` not `underline`.)
 
-Which brings me to the tables of styles. These are borrowed from https://gitlab.com/dslackw/colored, by the way.
+Which brings us to the tables of styles. (These are borrowed from https://gitlab.com/dslackw/colored, by the way.)
 
 | *styles* |
 |--------|
@@ -376,7 +382,8 @@ Which brings me to the tables of styles. These are borrowed from https://gitlab.
 
 ## Concatenation
 
-Concatenating a normal string and a `Styled` string produces a `Styled` string.
+Concatenating a normal string and a `Styled` string produces a `Styled` string, which is a subclass of string. 
+Internally, though, everything is a Unicode string.
 
 ```python
 >>> s = Styled("This just can't just [[ 'go'|underlined ]] on forever! ")
@@ -397,7 +404,7 @@ only multiple fore- and background colours are checked. This will be expanded as
 
 ## Cleaning Styles
 
-Cleaning ensures that the final set of styles is non-redundant.
+In addition to validation, styles are cleaned. Cleaning ensures that the final set of styles is non-redundant.
 
 ```python
 >>> s = Styled("It takes enormouse [[ 'courage'|bold:bold:bold ]] to admit that you're wrong (Hehehehehehe!)")

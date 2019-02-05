@@ -5,7 +5,7 @@ with open("README.md") as fh:
 
 setup(
     name='styled',
-    version='0.1.post0',
+    version='0.1.post1',
     packages=['styled'],
     url='',
     license='Apache 2.0',
