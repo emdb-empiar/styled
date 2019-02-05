@@ -2,7 +2,7 @@
 from __future__ import print_function
 from unittest import TestCase
 
-from styled import Styled, StyleError
+from .styled import Styled, StyleError
 
 
 class TestStyled(TestCase):
@@ -11,35 +11,6 @@ class TestStyled(TestCase):
         S = Styled(string)
         self.assertEqual(S, string)
         self.assertIsInstance(S, Styled)
-
-    # def test_style(self):
-    #     ss1 = """[[ 'Red'|red:blink ]]"""
-    #     ss2 = """ roses are usually [[ 'red'|red:bold ]]. boogey oogey"""
-    #     # S1 = Styled(ss1)
-    #     # print(S1)
-    #     # print(S1.finds)
-    #     # print()
-    #     # S2 = Styled(ss2)
-    #     # print(S2)
-    #     # print(S2.finds)
-    #     # print()
-    #     S3 = Styled(ss1 + ss2 + ss2 + ss1 + ss1 + ss2)
-    #     # print(S3)
-    #     # print(S3.finds)
-    #     # print()
-    #     ss3 = "Note that [[ 'm.start(group)'|bold:green ]] will equal [[ 'm.end(group)'|bold:yellow ]] if [[ 'group'|underlined ]] " \
-    #           "matched a null string. For example, after [[ 'm = re.search('b(c?)', 'cba')'|bold:blue ]], " \
-    #           "[[ 'm.start(0)'|bold ]] is 1, [[ 'm.end(0)'|bold ]] is 2, [[ 'm.start(1)'|bold ]] and " \
-    #           "[[ 'm.end(1)'|bold ]] are both 2, and [[ 'm.start(2)'|bold ]] raises an [[ 'IndexError'|underlined ]] " \
-    #           "exception."
-    #     print(ss3)
-    #     S4 = Styled(ss3)
-    #     print(S4)
-    #     # print(S4.finds)
-    #     # print()
-    #     ss4 = "This text [[ 'blinks'|reverse:magenta ]]!"
-    #     S5 = Styled(ss4)
-    #     print(S5)
 
     def test_find_tokens(self):
         s = """[[ 'a word'|fg-red ]]"""
@@ -92,11 +63,11 @@ class TestStyled(TestCase):
         self.assertIsInstance(s, Styled)
 
     def test_catch_multiple_fgs(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(StyleError):
             s = Styled("[[ 'useless'|fg-red:fg-orange ]]")
 
     def test_catch_multiple_bgs(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaises(StyleError):
             s = Styled("[[ 'useless'|bg-red:bg-orange ]]")
 
     def test_clean_tokens(self):

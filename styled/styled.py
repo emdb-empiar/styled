@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 import re
-from assets import COLOURS, STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
+from .assets import COLOURS, STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
 
 
 class StyleError(Exception):
@@ -122,9 +122,9 @@ class Styled(str):
                 else:
                     other.append(style)
             if len(fgs) > 1:
-                raise ValueError("Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError("Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
             if len(bgs) > 1:
-                raise ValueError("Multiple background styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError("Multiple background styles for text '{}': {}".format(text, ', '.join(styles)))
 
     @classmethod
     def _clean(cls, tokens):
