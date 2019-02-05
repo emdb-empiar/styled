@@ -1,14 +1,14 @@
 # Introduction
 
-Welcome to `styled`, a simple Python package to make writing beautiful text to the terminal effortless. 
-The main innovation behind `styled` is the dead-simple user interface which does away with the user needing to know 
-anything more than the colour names. Behind the scenes `styled` handles everything to keep 
-your styles consistent and redundant informing you when you have made formatting errors.
+Welcome to `styled`, a simple Python package that makes a breeze of writing beautiful text to the terminal. 
+The main innovation behind `styled` is the dead-simple user interface which does away with the user's need to know 
+anything other than the style names. Behind the scenes `styled` handles everything to keep 
+your styles consistent and redundant and informing you when you have made formatting errors.
 
 `styled` was borne out of the frustration encountered in using other packages which muddle the boundary between
-_user-space_ and _design-space_. The user should be a _user_ and the _designer_ is there to hide the implementation
-behind a clean UI that respects the user's time. This is what I've tried to do. If I have failed to live up to this 
-do let me know. I'm sure together we can come up with something better
+_user-space_ and _design-space_. The user should be free to be a _user_ and it is the _designer_ job to hide the 
+implementation behind a simple user interface that enables the user's task. This is what I've tried to do. If I have 
+failed to live up to this please let me know. I'm sure together we can come up with something better
 
 ## Getting Started
 
@@ -22,13 +22,13 @@ It's best to do this in a virtual environment.
 
 ```bash
 # anaconda/miniconda
-conda env create -n styled <python-version>
+conda create -n styled python=2.7 # only Python 2.7 for now, sorry
 source activate styled
 pip install git+https://github.com/paulkorir/styled.git
 
 # virtualenv
-virtualenv /path/to/env
-source /path/to/env/bin/activate
+virtualenv /path/to/env/styled -p /path/to/python # only Python 2.7 for now, sorry
+source /path/to/envs/styled/bin/activate
 pip install git+https://github.com/paulkorir/styled.git
 
 ```
@@ -54,7 +54,7 @@ There were up to 24 people who handed over themselves to the policia.
 You have to delimit the text you want to style with `[[ ... ]]` then make sure that the following _three (3)_ conditions hold:
 
 * separate the text from the styles with a pipe (`|`),
-* quote the text part with either a pair of single (`'...'`) or double (`"..."') quotes, then 
+* quote the text part with either a pair of single (`'...'`) or double (`"..."`) quotes, then 
 * separate each style with a colon (`:`)
 
 There are _three (3)_ types of styles:
