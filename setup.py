@@ -9,7 +9,7 @@ setup(
     packages=['styled'],
     url='',
     license='Apache 2.0',
-    author='pkorir',
+    author='Paul K. Korir, PhD',
     author_email='pkorir@ebi.ac.uk, paul.korir@gmail.com',
     description='Style your terminal with ease!',
     long_description=long_description,
