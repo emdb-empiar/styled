@@ -7,19 +7,25 @@ from .assets import COLOURS, STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
 
 class StyleError(Exception):
     def __init__(self, *args, **kwargs):
-        super(StyleError, self).__init__(*args, **kwargs)
+        super(StyleError, self).__init__(*args)
 
 
 class Styled(str):
-    pattern = re.compile(r".*?(?P<pattern>[[][[].*?[|].*?[]][]]).*?", re.UNICODE)
-    styled_text = re.compile(r".*?[[][[].*?[\"'](?P<text>.*?)[\"'][|](?P<styles>(\w+[:-]?)+).*?[]][]].*", re.UNICODE)
+    pattern = re.compile(r".*?(?P<pattern>[[][[].*?[|].*?[]][]]).*?", re.UNICODE|re.DOTALL)
+    styled_text = re.compile(r".*?[[][[].*?[\"'](?P<text>.*?)[\"'][|](?P<styles>(\w+[:-]?)+).*?[]][]].*", re.UNICODE|re.DOTALL)
 
     # todo: make plain and styled readonly attributes that are only set at construction time
-    def __new__(cls, s, *args, **kwargs):
-        if isinstance(s, str):
-            obj = super(Styled, cls).__new__(cls, s.decode('utf-8'))
-        elif isinstance(s, unicode):
-            obj = super(Styled, cls).__new__(cls, s)
+    def __new__(cls, s=None, *args, **kwargs):
+        if s is None:
+            obj = super(Styled, cls).__new__(cls, u'')
+        else:
+            if isinstance(s, basestring):
+                if isinstance(s, str):
+                    obj = super(Styled, cls).__new__(cls, s.decode('utf-8'))
+                elif isinstance(s, unicode):
+                    obj = super(Styled, cls).__new__(cls, s)
+            else:
+                raise ValueError("Invalid input object of type {}".format(type(s)))
         # format string using args and kwargs
         cls._plain = obj.format(*args, **kwargs).decode('utf-8')
         # extract tokens
@@ -34,7 +40,7 @@ class Styled(str):
         cls._unstyled = obj._transform(cls._plain, cls._cleaned_tokens, apply=False)
         return obj
 
-    def __init__(self, s, *args, **kwargs):
+    def __init__(self, s=None, *args, **kwargs):
         super(Styled, self).__init__(s)
 
     @staticmethod
@@ -56,7 +62,7 @@ class Styled(str):
                 else:
                     s += u'{}[{}m'.format(ESC, STYLE_NAMES[style_])
             except KeyError:
-                raise StyleError("Unknown style '{}'".format(style_))
+                raise StyleError(u"Unknown style '{}'".format(style_))
         return u'{}{}{}'.format(s, text, END)
 
     @classmethod
@@ -115,16 +121,16 @@ class Styled(str):
                     pos, style_ = style.split('-')
                 except ValueError:
                     style_ = style
-                if pos == 'fg':
+                if pos == u'fg':
                     fgs.append(style)
-                elif pos == 'bg':
+                elif pos == u'bg':
                     bgs.append(style)
                 else:
                     other.append(style)
             if len(fgs) > 1:
-                raise StyleError("Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError(u"Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
             if len(bgs) > 1:
-                raise StyleError("Multiple background styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError(u"Multiple background styles for text '{}': {}".format(text, ', '.join(styles)))
 
     @classmethod
     def _clean(cls, tokens):
@@ -139,6 +145,9 @@ class Styled(str):
 
     def __str__(self):
         return self._styled.encode('utf-8')
+
+    def __unicode__(self):
+        return self._styled
 
     def __eq__(self, other):
         return self._unstyled.encode('utf-8') == other

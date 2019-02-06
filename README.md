@@ -48,7 +48,7 @@ Using `styled` is easy. Try this out in your Python console.
 We are bold men!
 ```
 
-Use format parameters _directly_ in the constructor.
+You can perform string formatting _directly_ in the constructor.
 
 ```python
 >>> s = Styled("There were up to [[ '{}'|bold:fg-red ]] people who handed over themselves to the \
@@ -422,3 +422,9 @@ When I grow up I want to have my own Python string declaration like so:
 # hey! I'm a styled string
 s = s"You have to [[ 'believe'|fg-red ]] it to [[ 'see'|fg-green ]] it!"
 ```
+
+## Special Thanks
+
+To the following people for useful feedback:
+
+* Cesare Catavitello

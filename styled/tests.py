@@ -5,12 +5,26 @@ from unittest import TestCase
 from .styled import Styled, StyleError
 
 
+class NonStringType(object):
+    def __init__(self, s):
+        self.s = s
+
+
 class TestStyled(TestCase):
     def test_default(self):
         string = 'this is a string'
         S = Styled(string)
         self.assertEqual(S, string)
         self.assertIsInstance(S, Styled)
+
+    def test_empty(self):
+        s = Styled()
+        self.assertEqual(len(s), 0)
+
+    def test_type(self):
+        s = NonStringType(27)
+        with self.assertRaises(ValueError):
+            Styled(s)
 
     def test_find_tokens(self):
         s = """[[ 'a word'|fg-red ]]"""
@@ -79,8 +93,11 @@ class TestStyled(TestCase):
                    "of the military. ")
         s += 'Woe unto them!'
         self.assertIsInstance(s, Styled)
-        print(s)
 
-
-
-
+    def test_unicode(self):
+        s = Styled("We wish we had [[ 'red'|fg-red ]] faces")
+        u_s = unicode(s)
+        s_s = str(s)
+        self.assertIsInstance(u_s, unicode)
+        self.assertIsInstance(s_s, str)
+        self.assertIsInstance(s, Styled)
