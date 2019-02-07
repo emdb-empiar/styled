@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 import re
-from .assets import COLOURS, STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
+from .assets import STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
 
 
 class StyleError(Exception):
@@ -10,38 +10,33 @@ class StyleError(Exception):
         super(StyleError, self).__init__(*args)
 
 
-class Styled(str):
+class Styled(object):
     pattern = re.compile(r".*?(?P<pattern>[[][[].*?[|].*?[]][]]).*?", re.UNICODE|re.DOTALL)
     styled_text = re.compile(r".*?[[][[].*?[\"'](?P<text>.*?)[\"'][|](?P<styles>(\w+[:-]?)+).*?[]][]].*", re.UNICODE|re.DOTALL)
 
-    # todo: make plain and styled readonly attributes that are only set at construction time
-    def __new__(cls, s=None, *args, **kwargs):
+    def __init__(self, s=None, *args, **kwargs):
         if s is None:
-            obj = super(Styled, cls).__new__(cls, u'')
+            self._s = u''
         else:
             if isinstance(s, basestring):
                 if isinstance(s, str):
-                    obj = super(Styled, cls).__new__(cls, s.decode('utf-8'))
+                    self._s = s.decode('utf-8')
                 elif isinstance(s, unicode):
-                    obj = super(Styled, cls).__new__(cls, s)
+                    self._s = s
             else:
                 raise ValueError("Invalid input object of type {}".format(type(s)))
         # format string using args and kwargs
-        cls._plain = obj.format(*args, **kwargs).decode('utf-8')
+        self._plain = self._s.format(*args, **kwargs)
         # extract tokens
-        cls._tokens = obj._find_tokens(cls._plain)
+        self._tokens = self._find_tokens(self._plain)
         # validate
-        cls._validate(cls._tokens)
+        self._validate(self._tokens)
         # remove duplicates
-        cls._cleaned_tokens = cls._clean(cls._tokens)
+        self._cleaned_tokens = self._clean(self._tokens)
         # transform text with tokens and styles
-        cls._styled = obj._transform(cls._plain, cls._cleaned_tokens)
+        self._styled = self._transform(self._plain, self._cleaned_tokens)
         # unstyled version for length inference
-        cls._unstyled = obj._transform(cls._plain, cls._cleaned_tokens, apply=False)
-        return obj
-
-    def __init__(self, s=None, *args, **kwargs):
-        super(Styled, self).__init__(s)
+        self._unstyled = self._transform(self._plain, self._cleaned_tokens, apply=False)
 
     @staticmethod
     def transform(token):

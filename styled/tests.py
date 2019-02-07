@@ -48,7 +48,7 @@ class TestStyled(TestCase):
         sq = Styled("I have a [[ 'bold \"hair\"'|fg-red ]] face.")
         dq = Styled('I have a [[ "bold \'hair\'"|fg-red ]] face.')
         tq = Styled("""I have a [[ "bold 'hair'"|fg-red ]] face.""")
-        self.assertItemsEqual(sq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
+        self.assertItemsEqual(sq._tokens, [(9, 35, u'bold "hair"', [u'fg-red'])])
         self.assertItemsEqual(dq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
         self.assertItemsEqual(tq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
 
@@ -98,6 +98,22 @@ class TestStyled(TestCase):
         s = Styled("We wish we had [[ 'red'|fg-red ]] faces")
         u_s = unicode(s)
         s_s = str(s)
+        u_ = u"Thërę are some folkß who [[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the " \
+             u"thœught of the military. "
+        e = Styled(u_)
+        print(e)
         self.assertIsInstance(u_s, unicode)
         self.assertIsInstance(s_s, str)
         self.assertIsInstance(s, Styled)
+        self.assertIsInstance(e, Styled)
+
+    def test_concat_unicode(self):
+        u_s = u"A unicode string"
+        s = Styled("A [[ 'styled'|blink ]] string")
+        c1 = u_s + s
+        c2 = s + u_s
+        self.assertIsInstance(u_s, unicode)
+        self.assertIsInstance(c1, Styled)
+        self.assertIsInstance(c2, Styled)
+
+
