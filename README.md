@@ -12,16 +12,10 @@ failed to live up to this please let me know. I'm sure together we can come up w
 
 ## Getting Started
 
-To get the bleeding edge version of `styled` use
+To get it from `PyPI` use
 
 ```bash
-pip install git+https://github.com/paulkorir/styled.git
-```
-
-and to get it from `TestPyPI` use
-
-```bash
-pip install -i https://test.pypi.org/simple/ styled
+pip install styled
 ```
 
 It's best to do this in a virtual environment.
@@ -30,12 +24,12 @@ It's best to do this in a virtual environment.
 # anaconda/miniconda
 conda create -n styled python=2.7 # only Python 2.7 for now, sorry
 source activate styled
-pip install git+https://github.com/paulkorir/styled.git
+pip install styled
 
 # virtualenv
 virtualenv /path/to/env/styled -p /path/to/python # only Python 2.7 for now, sorry
 source /path/to/envs/styled/bin/activate
-pip install git+https://github.com/paulkorir/styled.git
+pip install styled
 
 ```
 
