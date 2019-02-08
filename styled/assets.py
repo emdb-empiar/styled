@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-ESC = u'\033'
+ESC = u'\x1b'
 
 END = u'{}[0m'.format(ESC)
 

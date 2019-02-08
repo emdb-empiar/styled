@@ -3,6 +3,7 @@ from __future__ import print_function
 from unittest import TestCase
 
 from .styled import Styled, StyleError
+from .assets import ESC, END
 
 
 class NonStringType(object):
@@ -84,6 +85,10 @@ class TestStyled(TestCase):
         with self.assertRaises(StyleError):
             s = Styled("[[ 'useless'|bg-red:bg-orange ]]")
 
+    def test_catch_multiple_no_ends(self):
+        with self.assertRaises(StyleError):
+            s = Styled("[[ 'useless'|bg-red:no-end:no-end ]]")
+
     def test_clean_tokens(self):
         s = Styled("[[ 'some text'|bold:bold ]]")
         self.assertItemsEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
@@ -101,7 +106,6 @@ class TestStyled(TestCase):
         u_ = u"Thërę are some folkß who [[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the " \
              u"thœught of the military. "
         e = Styled(u_)
-        print(e)
         self.assertIsInstance(u_s, unicode)
         self.assertIsInstance(s_s, str)
         self.assertIsInstance(s, Styled)
@@ -115,5 +119,16 @@ class TestStyled(TestCase):
         self.assertIsInstance(u_s, unicode)
         self.assertIsInstance(c1, Styled)
         self.assertIsInstance(c2, Styled)
+
+    def test_no_end(self):
+        # lacks end
+        u_ = u"[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink:no-end ]]"
+        e = Styled(u_)
+        self.assertNotEqual(e[-3:], u'[0m'.format(ESC, END))
+        # has end
+        u_ = u"[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]]"
+        e = Styled(u_)
+        self.assertEqual(e[-3:], u'[0m'.format(ESC, END))
+
 
 

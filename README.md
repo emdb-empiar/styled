@@ -69,6 +69,30 @@ There are _three (3)_ types of styles:
 * *foreground colours*, such as `fg-red`,
 * *background colours*, such as `bg-blue`.
 
+If you want to style an extended piece of text you can use a special additional style marker (`no-end`) indicating to 
+continue the styling for as long as possible. This can be useful if you want to style a long stretch of text.
+
+```python
+>>> s = Styled("There were up to [[ '{}'|bold:fg-red:no-end ]] people who handed over themselves to the \
+[[ '{police}'|fg-black:bg-red:bold ]].", 24, police='policia')
+>>> print(s)
+There were up to 24 people who handed over themselves to the policia.
+``` 
+
+The above example will have all the text until the next marker affected by the red foreground styling. You can also 
+manually enforce an end marker by using `yes-end` as a style. By default all style markers will terminate on the 
+text to be styled. So, for example
+
+```python
+>>> # an example of a terminating end marker
+>>> s = Styled("There were up to [[ '{}'|bold:fg-red:no-end ]] people who handed over themselves [[ ''|yes-end ]] to the \
+[[ '{police}'|fg-black:bg-red:bold ]].", 24, police='policia')
+>>> print(s)
+There were up to 24 people who handed over themselves to the policia.
+``` 
+
+will suspend red foreground at the end of the word 'themselves'.
+
 You can only have one foreground and one background colour. Ignoring this produces a `StyleError`
 
 ```python
@@ -100,7 +124,7 @@ styled.styled.StyleError: Unknown style 'underline'
 
 (In case you're wondering, it should have been `underlined` not `underline`.)
 
-Which brings us to the tables of styles. (These are borrowed from https://gitlab.com/dslackw/colored, by the way.)
+Which brings us to the tables of styles. (These are borrowed from <https://gitlab.com/dslackw/colored>, by the way.)
 
 | *styles* |
 |--------|
@@ -379,6 +403,14 @@ Which brings us to the tables of styles. (These are borrowed from https://gitlab
 |grey_93 |
 
 
+To view the palette of colours run the following in a Python shell
+
+```python
+>>> from styled import Styled
+>>> from styled.assets import COLOURS
+>>> for cn,cv in COLOURS.iteritems():
+...     print Styled("Foreground: [[ '{:>30}'|fg-{} ]]\tBackground: [[ '{:>30}'|bg-{} ]]".format(cn, cn, cn, cn))
+```
 
 ## Concatenation
 
@@ -425,6 +457,7 @@ s = s"You have to [[ 'believe'|fg-red ]] it to [[ 'see'|fg-green ]] it!"
 
 ## Special Thanks
 
-To the following people for useful feedback:
+To the following people
 
-* Cesare Catavitello
+* Dimitris Zlatanidis (for the inspiration and resources in his package `colored` available at <https://gitlab.com/dslackw/colored>)
+* Cesare Catavitello (for being the _first_ user)
