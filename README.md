@@ -1,8 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master)](https://coveralls.io/github/emdb-empiar/styled?branch=master)
-
-[![Build Status](https://travis-ci.org/emdb-empiar/styled.svg?branch=master)](https://travis-ci.org/emdb-empiar/styled)
-    
-![PyPI - Python Version](https://img.shields.io/pypi/pyversions/styled.svg)
+[![PyPI version](https://badge.fury.io/py/styled.svg)](https://badge.fury.io/py/styled) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/styled.svg) [![Coverage Status](https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master)](https://coveralls.io/github/emdb-empiar/styled?branch=master) [![Build Status](https://travis-ci.org/emdb-empiar/styled.svg?branch=master)](https://travis-ci.org/emdb-empiar/styled)
 
 # Introduction
 
