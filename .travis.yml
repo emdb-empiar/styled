@@ -1,0 +1,34 @@
+language: python
+
+python:
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "3.7"
+
+sudo: true
+
+before_install:
+  - python --version
+  - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
+  - sudo apt-get update
+  - sudo apt-get install build-essential
+  - pip -V
+  - pip install --upgrade pip
+  - pip install setuptools
+#  - pip install coveralls
+  - pip install pytest
+  - pip install tox
+
+install:
+  - python setup.py develop
+
+script:
+  - tox
+
+#script:
+#  - coverage run --include="/home/travis/build/emdb-empiar/sfftk/sfftk/*" --omit="/home/travis/build/emdb-empiar/sfftk/sfftk/schema/v*.py","/home/travis/build/emdb-empiar/sfftk/sfftk/test_data","/home/travis/build/emdb-empiar/sfftk/sfftk/unittests" `which sff` tests all -v 3
+#
+#after_success:
+#  - coveralls
