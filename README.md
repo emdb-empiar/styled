@@ -1,10 +1,8 @@
-.. image:: https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master
-    :target: https://coveralls.io/github/emdb-empiar/styled?branch=master
+[![Coverage Status](https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master)](https://coveralls.io/github/emdb-empiar/styled?branch=master)
 
-.. image:: https://travis-ci.org/emdb-empiar/styled.svg?branch=master
-    :target: https://travis-ci.org/emdb-empiar/styled
+[![Build Status](https://travis-ci.org/emdb-empiar/styled.svg?branch=master)](https://travis-ci.org/emdb-empiar/styled)
     
-.. image:: https://img.shields.io/pypi/pyversions/styled.svg   :alt: PyPI - Python Version
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/styled.svg)
 
 # Introduction
 
