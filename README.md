@@ -3,6 +3,8 @@
 
 .. image:: https://travis-ci.org/emdb-empiar/styled.svg?branch=master
     :target: https://travis-ci.org/emdb-empiar/styled
+    
+.. image:: https://img.shields.io/pypi/pyversions/styled.svg   :alt: PyPI - Python Version
 
 # Introduction
 
