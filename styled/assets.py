@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Module defining colour and style assets"""
 
 ESC = u'\x1b'
 

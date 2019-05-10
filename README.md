@@ -7,8 +7,8 @@ your styles consistent and redundant and informing you when you have made format
 
 `styled` was borne out of the frustration encountered in using other packages which muddle the boundary between
 _user-space_ and _design-space_. The user should be free to be a _user_ and it is the _designer's_ job to hide the 
-implementation behind a simple user interface that enables the user's task. This is what I've tried to do. If I have 
-failed to live up to this please let me know. I'm sure together we can come up with something better
+implementation behind a simple user interface that facilitates the user's task. This is what I've tried to do. If I have 
+failed to live up to this please let me know. I'm sure together we can come up with something better.
 
 ## Getting Started
 
@@ -93,12 +93,15 @@ You can only have one foreground and one background colour. Ignoring this produc
 >>> from styled import Styled
 >>> s = Styled("There were up to [[ '{}'|bold:fg-red:fg-blue ]] people who handed over themselves to the [[ '{police}'|fg-black:bg-red:bold ]].", 24, police='policia')
 Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "styled/styled.py", line 28, in __new__
-    cls._validate(cls._tokens)
-  File "styled/styled.py", line 125, in _validate
-    raise StyleError("Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
-styled.styled.StyleError: Multiple foreground styles for text '24': bold, fg-red, fg-blue
+  File "/Users/pkorir/miniconda2/envs/styled/lib/python2.7/site-packages/IPython/core/interactiveshell.py", line 2878, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "<ipython-input-3-0993b680f88b>", line 1, in <module>
+    s = Styled("There were up to [[ '{}'|bold:fg-red:fg-blue ]] people who handed over themselves to the [[ '{police}'|fg-black:bg-red:bold ]].", 24, police='policia')
+  File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 55, in __init__
+    self._validate(self._tokens)
+  File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 156, in _validate
+    raise StyleError(u"Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
+StyleError: Multiple foreground styles for text '24': bold, fg-red, fg-blue
 ```
 
 Inputing an invalid `style` also raises a `StyleError`
@@ -106,14 +109,17 @@ Inputing an invalid `style` also raises a `StyleError`
 ```python
 >>> s = Styled("This just can't just [[ 'go'|underline ]] on forever! ")
 Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "styled/styled.py", line 32, in __new__
-    cls._styled = obj._transform(cls._plain, cls._cleaned_tokens)
-  File "styled/styled.py", line 70, in _transform
-    styled += plain[i:start] + cls.transform(token)
-  File "styled/styled.py", line 59, in transform
-    raise StyleError("Unknown style '{}'".format(style_))
-styled.styled.StyleError: Unknown style 'underline'
+  File "/Users/pkorir/miniconda2/envs/styled/lib/python2.7/site-packages/IPython/core/interactiveshell.py", line 2878, in run_code
+    exec(code_obj, self.user_global_ns, self.user_ns)
+  File "<ipython-input-4-528d6d2ac4f4>", line 1, in <module>
+    s = Styled("This just can't just [[ 'go'|underline ]] on forever! ")
+  File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 59, in __init__
+    self._styled = self._transform(self._plain, self._cleaned_tokens)
+  File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 99, in _transform
+    styled += plain[i:start] + self.transform(token)
+  File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 87, in transform
+    raise StyleError(u"Unknown style '{}'".format(style_))
+StyleError: Unknown style 'underline'
 ```
 
 (In case you're wondering, it should have been `underlined` not `underline`.)
@@ -400,8 +406,7 @@ Which brings us to the tables of styles. (These are borrowed from <https://gitla
 To view the palette of colours run the following in a Python shell
 
 ```python
->>> from styled import Styled
->>> from styled.assets import COLOURS
+>>> from styled import Styled, COLOURS
 >>> for cn,cv in COLOURS.iteritems():
 ...     print Styled("Foreground: [[ '{:>30}'|fg-{} ]]\tBackground: [[ '{:>30}'|bg-{} ]]".format(cn, cn, cn, cn))
 ```

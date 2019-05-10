@@ -1,11 +1,12 @@
 from setuptools import setup
+from styled import STYLED_VERSION
 
 with open("README.md") as fh:
     long_description = fh.read()
 
 setup(
     name='styled',
-    version='0.1.2.post0',
+    version=STYLED_VERSION,
     packages=['styled'],
     url='',
     license='Apache 2.0',

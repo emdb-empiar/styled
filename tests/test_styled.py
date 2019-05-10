@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
+
+import sys
 from unittest import TestCase
 
-from .styled import Styled, StyleError
-from .assets import ESC, END
+from styled import Styled, StyleError, ESC, END
 
 
 class NonStringType(object):
@@ -11,7 +12,21 @@ class NonStringType(object):
         self.s = s
 
 
-class TestStyled(TestCase):
+class Py23Fix(object):
+    def __init__(self, *args, **kwargs):
+        if sys.version_info[0] > 2:
+            pass
+        else:
+            # new names for assert methods
+            self.assertCountEqual = self.assertItemsEqual
+        super(Py23Fix, self).__init__(*args, **kwargs)
+
+
+class BaseTestStyled(Py23Fix, TestCase):
+    pass
+
+
+class TestStyled(BaseTestStyled):
     def test_default(self):
         string = 'this is a string'
         S = Styled(string)
@@ -30,9 +45,9 @@ class TestStyled(TestCase):
     def test_find_tokens(self):
         s = """[[ 'a word'|fg-red ]]"""
         s = Styled(s)
-        self.assertItemsEqual(s._tokens, [(0, 21, u'a word', [u'fg-red'])])
+        self.assertCountEqual(s._tokens, [(0, 21, u'a word', [u'fg-red'])])
         s = Styled("""[[ 'your {} is open'|fg-blue ]]""", 'bank')
-        self.assertItemsEqual(s._tokens, [(0, 33, u'your bank is open', [u'fg-blue'])])
+        self.assertCountEqual(s._tokens, [(0, 33, u'your bank is open', [u'fg-blue'])])
 
     def test_length(self):
         u = 'I am the most handsome guy in the room.'
@@ -49,15 +64,27 @@ class TestStyled(TestCase):
         sq = Styled("I have a [[ 'bold \"hair\"'|fg-red ]] face.")
         dq = Styled('I have a [[ "bold \'hair\'"|fg-red ]] face.')
         tq = Styled("""I have a [[ "bold 'hair'"|fg-red ]] face.""")
-        self.assertItemsEqual(sq._tokens, [(9, 35, u'bold "hair"', [u'fg-red'])])
-        self.assertItemsEqual(dq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
-        self.assertItemsEqual(tq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
+        self.assertCountEqual(sq._tokens, [(9, 35, u'bold "hair"', [u'fg-red'])])
+        self.assertCountEqual(dq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
+        self.assertCountEqual(tq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
 
     def test_style_error(self):
         with self.assertRaises(StyleError):
             Styled('I have a [[ "bold\'hair|fg-red ]] face')
 
-    def test_concatenate(self):
+    def test_invalid_style(self):
+        with self.assertRaises(StyleError):
+            Styled("I have a [[ 'good'|fg-sldjdlj ]]")
+
+    def test_contatenate_styled(self):
+        s1 = Styled("This is the [[ 'end'|bold ]]!")
+        s2 = Styled(" when this [[ 'ends'|bold ]]!")
+        s3 = s1 + s2
+        self.assertIsInstance(s3, Styled)
+        self.assertEqual(s3, s1 + s2)
+        self.assertEqual(len(s3), len(s1) + len(s2))
+
+    def test_concatenate_with_other(self):
         s1 = Styled("This is the [[ 'end'|bold ]]!")
         u1 = " And I will be finished."
         c1 = s1 + u1
@@ -91,7 +118,8 @@ class TestStyled(TestCase):
 
     def test_clean_tokens(self):
         s = Styled("[[ 'some text'|bold:bold ]]")
-        self.assertItemsEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
+        # self.assertItemsEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
+        self.assertCountEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
 
     def test_iteration(self):
         s = Styled("There are some folks who [[ 'gasp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the thought "
@@ -101,12 +129,18 @@ class TestStyled(TestCase):
 
     def test_unicode(self):
         s = Styled("We wish we had [[ 'red'|fg-red ]] faces")
-        u_s = unicode(s)
+        if sys.version_info[0] > 2:
+            u_s = str(s)
+        else:
+            u_s = unicode(s)
         s_s = str(s)
         u_ = u"Thërę are some folkß who [[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the " \
              u"thœught of the military. "
         e = Styled(u_)
-        self.assertIsInstance(u_s, unicode)
+        if sys.version_info[0] > 2:
+            self.assertIsInstance(u_s, str)
+        else:
+            self.assertIsInstance(u_s, unicode)
         self.assertIsInstance(s_s, str)
         self.assertIsInstance(s, Styled)
         self.assertIsInstance(e, Styled)
@@ -116,7 +150,10 @@ class TestStyled(TestCase):
         s = Styled("A [[ 'styled'|blink ]] string")
         c1 = u_s + s
         c2 = s + u_s
-        self.assertIsInstance(u_s, unicode)
+        if sys.version_info[0] > 2:
+            self.assertIsInstance(u_s, str)
+        else:
+            self.assertIsInstance(u_s, unicode)
         self.assertIsInstance(c1, Styled)
         self.assertIsInstance(c2, Styled)
 
@@ -130,5 +167,9 @@ class TestStyled(TestCase):
         e = Styled(u_)
         self.assertEqual(e[-3:], u'[0m'.format(ESC, END))
 
-
-
+    def test_yes_end(self):
+        u_ = u"[[ 'wonder-woman'|fg-red:no-end ]] and this text will also be red [[ 'super-man'|fg-blue:yes-end ]]" \
+             u"and this text will be normal"
+        e = Styled(u_)
+        # test that there is not styling at the end
+        self.assertTrue(e[-1], u_[-1])
