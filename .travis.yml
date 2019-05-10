@@ -1,3 +1,4 @@
+dist: xenial
 language: python
 
 python:
@@ -5,7 +6,7 @@ python:
   - "3.4"
   - "3.5"
   - "3.6"
-#  - "3.7"
+  - "3.7"
 
 sudo: true
 
@@ -17,18 +18,15 @@ before_install:
   - pip -V
   - pip install --upgrade pip
   - pip install setuptools
-#  - pip install coveralls
+  - pip install coveralls
   - pip install pytest
-#  - pip install tox
+  - pip install pytest-cov
 
 install:
   - python setup.py develop
 
 script:
-  - pytest
+  - pytest --cov=./styled tests/test_styled.py
 
-#script:
-#  - coverage run --include="/home/travis/build/emdb-empiar/sfftk/sfftk/*" --omit="/home/travis/build/emdb-empiar/sfftk/sfftk/schema/v*.py","/home/travis/build/emdb-empiar/sfftk/sfftk/test_data","/home/travis/build/emdb-empiar/sfftk/sfftk/unittests" `which sff` tests all -v 3
-#
-#after_success:
-#  - coveralls
+after_success:
+  - coveralls

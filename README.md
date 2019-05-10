@@ -1,3 +1,6 @@
+.. image:: https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master
+:target: https://coveralls.io/github/emdb-empiar/styled?branch=master
+
 # Introduction
 
 Welcome to `styled`, a simple Python package that makes a breeze of writing beautiful text to the terminal. 
@@ -22,12 +25,12 @@ It's best to do this in a virtual environment.
 
 ```bash
 # anaconda/miniconda
-conda create -n styled python=2.7 # only Python 2.7 for now, sorry
+conda create -n styled python
 source activate styled
 pip install styled
 
 # virtualenv
-virtualenv /path/to/env/styled -p /path/to/python # only Python 2.7 for now, sorry
+virtualenv /path/to/env/styled -p /path/to/python
 source /path/to/envs/styled/bin/activate
 pip install styled
 
