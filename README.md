@@ -1,5 +1,8 @@
 .. image:: https://coveralls.io/repos/github/emdb-empiar/styled/badge.svg?branch=master
-:target: https://coveralls.io/github/emdb-empiar/styled?branch=master
+    :target: https://coveralls.io/github/emdb-empiar/styled?branch=master
+
+.. image:: https://travis-ci.org/emdb-empiar/styled.svg?branch=master
+    :target: https://travis-ci.org/emdb-empiar/styled
 
 # Introduction
 
