@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Module defining :py:class:`styled.Styled` class
 
-`Styled` objects are intended to operate just like strings (some methods are yet to be defined e.g. `format()`.
+`Styled` objects are intended to operate just like strings
+(some methods are yet to be defined e.g. `format()`.
 
 """
 from __future__ import print_function
@@ -12,7 +13,8 @@ import sys
 from .assets import STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
 
 
-# todo: add other string interfaces e.g. format, etc. to make a Styled object behave like a string
+# todo: add other string interfaces e.g. format, etc.
+#  to make a Styled object behave like a string
 
 class StyleError(Exception):
     """Exception indicating a style error has occured"""
@@ -22,10 +24,16 @@ class StyleError(Exception):
 class Styled(object):
     """Main class that handles styled text and replaces markup with styles"""
     # matches styled text delimiter: ".*[[.*|.*]].*"
-    pattern = re.compile(r".*?(?P<pattern>[\[][\[].*?[|].*?[\]][\]]).*?", re.UNICODE | re.DOTALL)
+    pattern = re.compile(
+        r".*?(?P<pattern>[\[][\[].*?[|].*?[\]][\]]).*?",
+        re.UNICODE | re.DOTALL
+    )
     # matches styled text and text styles: "[[ '<text>'|<styles> ]]"
-    styled_text = re.compile(r".*?[\[][\[].*?[\"'](?P<text>.*?)[\"'][|](?P<styles>(\w+[:-]?)+).*?[\]][\]].*",
-                             re.UNICODE | re.DOTALL)
+    styled_text = re.compile(
+        r".*?[\[][\[].*?[\"'](?P<text>.*?)[\"'][|]"
+        r"(?P<styles>(\w+[:-]?)+).*?[\]][\]].*",
+        re.UNICODE | re.DOTALL
+    )
 
     def __init__(self, styled_string=None, *args, **kwargs):
         if sys.version_info[0] > 2:
@@ -36,7 +44,11 @@ class Styled(object):
             elif styled_string is None:
                 self._s = ''
             else:
-                raise ValueError("Invalid input object of type {}".format(type(styled_string)))
+                raise ValueError(
+                    "Invalid input object of type {}".format(
+                        type(styled_string)
+                    )
+                )
         else:
             if isinstance(styled_string, basestring):
                 if isinstance(styled_string, str):
@@ -46,7 +58,11 @@ class Styled(object):
             elif styled_string is None:
                 self._s = u''
             else:
-                raise ValueError(u"Invalid input object of type {}".format(type(styled_string)))
+                raise ValueError(
+                    u"Invalid input object of type {}".format(
+                        type(styled_string)
+                    )
+                )
         # format string using args and kwargs
         self._plain = self._s.format(*args, **kwargs)
         # extract tokens
@@ -58,7 +74,9 @@ class Styled(object):
         # transform text with tokens and styles
         self._styled = self._transform(self.plain, self._cleaned_tokens)
         # unstyled version for length inference
-        self._unstyled = self._transform(self.plain, self._cleaned_tokens, invoke=False)
+        self._unstyled = self._transform(
+            self.plain, self._cleaned_tokens, invoke=False
+        )
 
     @property
     def plain(self):
@@ -121,10 +139,16 @@ class Styled(object):
             found_pattern = pattern.group('pattern')
             styled_text = self.styled_text.match(found_pattern)
             if not styled_text:
-                raise StyleError(u"Invalid tokens in pattern {}".format(found_pattern))
+                raise StyleError(
+                    u"Invalid tokens in pattern {}".format(
+                        found_pattern)
+                )
             text = styled_text.group('text')
             styles = styled_text.group('styles').split(u':')
-            token = (pattern.start() + pos + (pattern.end() - len(found_pattern)), pattern.end() + pos, text, styles)
+            token = (
+                pattern.start() + pos + (pattern.end() - len(found_pattern)),
+                pattern.end() + pos, text, styles
+            )
             tokens.append(
                 token,
             )
@@ -158,11 +182,23 @@ class Styled(object):
                 else:
                     other.append(style)
             if len(fgs) > 1:
-                raise StyleError(u"Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError(
+                    u"Multiple foreground styles for text '{}': {}".format(
+                        text, ', '.join(styles)
+                    )
+                )
             if len(bgs) > 1:
-                raise StyleError(u"Multiple background styles for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError(
+                    u"Multiple background styles for text '{}': {}".format(
+                        text, ', '.join(styles)
+                    )
+                )
             if len(no_ends) > 1:
-                raise StyleError(u"Multiple no-ends for text '{}': {}".format(text, ', '.join(styles)))
+                raise StyleError(
+                    u"Multiple no-ends for text '{}': {}".format(
+                        text, ', '.join(styles)
+                    )
+                )
 
     @staticmethod
     def _clean(tokens):

@@ -288,6 +288,3 @@ def FG_COLOURS(name):
 
 def BG_COLOURS(name):
     return u"48;5;{}".format(COLOURS[name])
-
-
-
