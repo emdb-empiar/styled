@@ -12,7 +12,7 @@ authors = [
 ]
 description = "Style your terminal with ease!"
 readme = "README.md"
-requires-python = ">=2.7"
+requires-python = ">=3.7"
 keywords = ["style, terminal, colours, format"]
 # enter the list of trove classifiers below
 classifiers = [
@@ -44,7 +44,7 @@ test = [
 ]
 
 [project.urls]
-homepage = "https://github.com/emdb-empiar/styled"
+homepage = "https://styled.readthedocs.org/en/latest"
 documentation = "https://github.com/emdb-empiar/styled"
 repository = "https://github.com/emdb-empiar/styled"
 changelog = "https://github.com/emdb-empiar/styled"
