@@ -44,7 +44,7 @@ test = [
 ]
 
 [project.urls]
-homepage = "https://styled.readthedocs.org/en/latest"
+homepage = "https://github.com/emdb-empiar/styled"
 documentation = "https://github.com/emdb-empiar/styled"
 repository = "https://github.com/emdb-empiar/styled"
 changelog = "https://github.com/emdb-empiar/styled"
