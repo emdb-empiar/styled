@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-STYLED_VERSION = u'0.2.0.post2'
+__version__ = u'0.3.0'
 
 try:
     from styled import Styled, StyleError

@@ -61,7 +61,7 @@ You have to delimit the text you want to style with `[[ ... ]]` then make sure t
 
 There are _three (3)_ types of styles:
 
-* _text styling_ such as `bold`, `blink`, `underline` etc.
+* _text styling_ such as `bold`, `blink`, `underlined` etc.
 * *foreground colours*, such as `fg-red`,
 * *background colours*, such as `bg-blue`.
 
