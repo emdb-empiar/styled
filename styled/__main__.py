@@ -12,16 +12,24 @@ def main():
     if args.command == "try":
         print(styled.Styled(args.text))
     elif args.command == "demo":
-        if args.object == "colours" or args.object == "all":
-            print(styled.Styled("[[ '{:<17}COLOURS{:>17}'|underlined:bold ]]".format('', '')))
-            for colour_name in styled.assets.COLOURS:
+        if args.object == "colours":
+            # we will draw a matrix so that we will the screen; there are 256 colours
+            print(styled.Styled("[[ '{:<77}COLOURS{:>77}'|underlined:bold ]]".format('', '')))
+            for index, colour_name in enumerate(styled.assets.COLOURS, start=1):
+                if index  % 4 == 0:
+                    end = "\n"
+                else:
+                    end = ""
                 print(
                     styled.Styled("[[ '{:^20}'|fg-{}:bg-white ]]".format(colour_name, colour_name)) +
-                    styled.Styled("[[ '{:^20}'|bg-{} ]]".format(colour_name, colour_name))
+                    styled.Styled("[[ '{:^20}'|bg-{} ]]".format(colour_name, colour_name)),
+                    end=end
                 )
-        if args.object == "formats" or args.object == "all":
+        if args.object == "formats":
             print(styled.Styled("[[ '{:<7}FORMATS{:>7}'|underlined:bold ]]".format('', '')))
-            for style_name in styled.assets.STYLE_NAMES:
+            for index, style_name in enumerate(styled.assets.STYLE_NAMES):
+                if index > 6:
+                    break
                 print(styled.Styled("[[ '{:^20}'|{} ]]".format(style_name, style_name)))
     return 0
 
