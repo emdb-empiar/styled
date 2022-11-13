@@ -1,32 +1,76 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+import argparse
+import io
+import shlex
 import sys
 from unittest import TestCase
 
-from styled import Styled, StyleError, ESC, END
+from styled import Styled, StyleError, ESC, END, __main__, __version__
 
 
-class NonStringType(object):
+class NonStringType:
     def __init__(self, s):
         self.s = s
 
 
-class Py23Fix(object):
-    def __init__(self, *args, **kwargs):
-        if sys.version_info[0] > 2:
-            pass
-        else:
-            # new names for assert methods
-            self.assertCountEqual = self.assertItemsEqual
-        super(Py23Fix, self).__init__(*args, **kwargs)
+class TestCLI(TestCase):
+    def test_try(self):
+        sys.argv = shlex.split("""styled try "[[ 'test'|fg-red:bg-blue:bold ]]\"""")
+        args = __main__.parse_args()
+        self.assertIsInstance(args, argparse.Namespace)
+        self.assertTrue(hasattr(args, 'command'))
+        self.assertTrue(hasattr(args, 'text'))
+        self.assertEqual('try', args.command)
+        self.assertEqual("[[ 'test'|fg-red:bg-blue:bold ]]", args.text)
+
+    def test_demo(self):
+        sys.argv = shlex.split("""styled demo""")
+        args = __main__.parse_args()
+        self.assertIsInstance(args, argparse.Namespace)
+        self.assertTrue(hasattr(args, 'command'))
+        self.assertTrue(hasattr(args, 'object'))
+        self.assertEqual('demo', args.command)
+        self.assertEqual('colours', args.object)
+        # formats
+        sys.argv = shlex.split("""styled demo formats""")
+        args = __main__.parse_args()
+        self.assertEqual('formats', args.object)
+        # error
+        sys.argv = shlex.split("""styled demo nothing""")
+        with self.assertRaises(SystemExit):
+            __main__.parse_args()
+
+    def test_version(self):
+        sys.argv = shlex.split("""styled version""")
+        args = __main__.parse_args()
+        self.assertIsInstance(args, argparse.Namespace)
+        self.assertTrue(hasattr(args, 'command'))
+        self.assertEqual('version', args.command)
 
 
-class BaseTestStyled(Py23Fix, TestCase):
-    pass
+class TestMain(TestCase):
+    def test_try(self):
+        sys.stdout = io.StringIO()
+        sys.argv = shlex.split("""styled try "[[ 'test'|fg-red ]]\"""")
+        __main__.main()
+        # the order is random
+        self.assertEqual('\x1b[38;5;1mtest\x1b[0m\n', sys.stdout.getvalue())
+        # unvarnished
+        sys.stdout = io.StringIO()
+        sys.argv = shlex.split("""styled try nothing""")
+        __main__.main()
+        self.assertEqual('nothing\n', sys.stdout.getvalue())
+
+    def test_version(self):
+        sys.stdout = io.StringIO()
+        sys.argv = shlex.split("""styled version""")
+        __main__.main()
+        self.assertEqual('v{}\n'.format(__version__), sys.stdout.getvalue())
 
 
-class TestStyled(BaseTestStyled):
+class TestStyled(TestCase):
     def test_default(self):
         string = 'this is a string'
         S = Styled(string)
@@ -45,9 +89,9 @@ class TestStyled(BaseTestStyled):
     def test_find_tokens(self):
         s = """[[ 'a word'|fg-red ]]"""
         s = Styled(s)
-        self.assertCountEqual(s._tokens, [(0, 21, u'a word', [u'fg-red'])])
+        self.assertCountEqual(s._tokens, [(0, 21, 'a word', ['fg-red'])])
         s = Styled("""[[ 'your {} is open'|fg-blue ]]""", 'bank')
-        self.assertCountEqual(s._tokens, [(0, 33, u'your bank is open', [u'fg-blue'])])
+        self.assertCountEqual(s._tokens, [(0, 33, 'your bank is open', ['fg-blue'])])
 
     def test_length(self):
         u = 'I am the most handsome guy in the room.'
@@ -64,9 +108,9 @@ class TestStyled(BaseTestStyled):
         sq = Styled("I have a [[ 'bold \"hair\"'|fg-red ]] face.")
         dq = Styled('I have a [[ "bold \'hair\'"|fg-red ]] face.')
         tq = Styled("""I have a [[ "bold 'hair'"|fg-red ]] face.""")
-        self.assertCountEqual(sq._tokens, [(9, 35, u'bold "hair"', [u'fg-red'])])
-        self.assertCountEqual(dq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
-        self.assertCountEqual(tq._tokens, [(9, 35, u"bold 'hair'", [u'fg-red'])])
+        self.assertCountEqual(sq._tokens, [(9, 35, 'bold "hair"', ['fg-red'])])
+        self.assertCountEqual(dq._tokens, [(9, 35, "bold 'hair'", ['fg-red'])])
+        self.assertCountEqual(tq._tokens, [(9, 35, "bold 'hair'", ['fg-red'])])
 
     def test_style_error(self):
         with self.assertRaises(StyleError):
@@ -118,8 +162,8 @@ class TestStyled(BaseTestStyled):
 
     def test_clean_tokens(self):
         s = Styled("[[ 'some text'|bold:bold ]]")
-        # self.assertItemsEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
-        self.assertCountEqual(s._cleaned_tokens, [(0, 27, u"some text", [u'bold'])])
+        # self.assertItemsEqual(s._cleaned_tokens, [(0, 27, "some text", ['bold'])])
+        self.assertCountEqual(s._cleaned_tokens, [(0, 27, "some text", ['bold'])])
 
     def test_iteration(self):
         s = Styled("There are some folks who [[ 'gasp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the thought "
@@ -129,47 +173,38 @@ class TestStyled(BaseTestStyled):
 
     def test_unicode(self):
         s = Styled("We wish we had [[ 'red'|fg-red ]] faces")
-        if sys.version_info[0] > 2:
-            u_s = str(s)
-        else:
-            u_s = unicode(s)
+        u_s = str(s)
         s_s = str(s)
-        u_ = u"Thërę are some folkß who [[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the " \
-             u"thœught of the military. "
+        u_ = "Thërę are some folkß who [[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]] at the " \
+             "thœught of the military. "
         e = Styled(u_)
-        if sys.version_info[0] > 2:
-            self.assertIsInstance(u_s, str)
-        else:
-            self.assertIsInstance(u_s, unicode)
+        self.assertIsInstance(u_s, str)
         self.assertIsInstance(s_s, str)
         self.assertIsInstance(s, Styled)
         self.assertIsInstance(e, Styled)
 
     def test_concat_unicode(self):
-        u_s = u"A unicode string"
+        u_s = "A unicode string"
         s = Styled("A [[ 'styled'|blink ]] string")
         c1 = u_s + s
         c2 = s + u_s
-        if sys.version_info[0] > 2:
-            self.assertIsInstance(u_s, str)
-        else:
-            self.assertIsInstance(u_s, unicode)
+        self.assertIsInstance(u_s, str)
         self.assertIsInstance(c1, Styled)
         self.assertIsInstance(c2, Styled)
 
     def test_no_end(self):
         # lacks end
-        u_ = u"[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink:no-end ]]"
+        u_ = "[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink:no-end ]]"
         e = Styled(u_)
-        self.assertNotEqual(e[-3:], u'[0m'.format(ESC, END))
+        self.assertNotEqual(e[-3:], '[0m'.format(ESC, END))
         # has end
-        u_ = u"[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]]"
+        u_ = "[[ 'gæsp'|fg-black:bg-deep_sky_blue_2:underlined:blink ]]"
         e = Styled(u_)
-        self.assertEqual(e[-3:], u'[0m'.format(ESC, END))
+        self.assertEqual(e[-3:], '[0m'.format(ESC, END))
 
     def test_yes_end(self):
-        u_ = u"[[ 'wonder-woman'|fg-red:no-end ]] and this text will also be red [[ 'super-man'|fg-blue:yes-end ]]" \
-             u"and this text will be normal"
+        u_ = "[[ 'wonder-woman'|fg-red:no-end ]] and this text will also be red [[ 'super-man'|fg-blue:yes-end ]]" \
+             "and this text will be normal"
         e = Styled(u_)
         # test that there is not styling at the end
         self.assertTrue(e[-1], u_[-1])

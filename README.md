@@ -114,7 +114,7 @@ Traceback (most recent call last):
   File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 55, in __init__
     self._validate(self._tokens)
   File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 156, in _validate
-    raise StyleError(u"Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
+    raise StyleError("Multiple foreground styles for text '{}': {}".format(text, ', '.join(styles)))
 StyleError: Multiple foreground styles for text '24': bold, fg-red, fg-blue
 ```
 
@@ -136,7 +136,7 @@ Traceback (most recent call last):
   File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 99, in _transform
     styled += plain[i:start] + self.transform(token)
   File "/Users/pkorir/PycharmProjects/styled/styled/styled.py", line 87, in transform
-    raise StyleError(u"Unknown style '{}'".format(style_))
+    raise StyleError("Unknown style '{}'".format(style_))
 StyleError: Unknown style 'underline'
 ```
 
@@ -174,9 +174,9 @@ In addition to validation, styles are cleaned. Cleaning ensures that the final s
 from styled import Styled
 s = Styled("It takes enormous [[ 'courage'|bold:bold:bold ]] to admit that you're wrong.")
 print(s._tokens)
-# [(19, 49, u'courage', [u'bold', u'bold', u'bold'])]
+# [(19, 49, 'courage', ['bold', 'bold', 'bold'])]
 print(s._cleaned_tokens)
-# [(19, 49, u'courage', [u'bold'])]
+# [(19, 49, 'courage', ['bold'])]
 ```
 
 ## Backstory

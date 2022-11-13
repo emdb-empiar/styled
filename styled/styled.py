@@ -21,7 +21,7 @@ class StyleError(Exception):
     pass
 
 
-class Styled(object):
+class Styled:
     """Main class that handles styled text and replaces markup with styles"""
     # matches styled text delimiter: ".*[[.*|.*]].*"
     pattern = re.compile(
@@ -36,33 +36,18 @@ class Styled(object):
     )
 
     def __init__(self, styled_string=None, *args, **kwargs):
-        if sys.version_info[0] > 2:
-            if isinstance(styled_string, str):
-                self._s = styled_string
-            elif isinstance(styled_string, bytes):
-                self._s = styled_string.decode('utf-8')
-            elif styled_string is None:
-                self._s = ''
-            else:
-                raise ValueError(
-                    "Invalid input object of type {}".format(
-                        type(styled_string)
-                    )
-                )
+        if isinstance(styled_string, str):
+            self._s = styled_string
+        elif isinstance(styled_string, bytes):
+            self._s = styled_string.decode('utf-8')
+        elif styled_string is None:
+            self._s = ''
         else:
-            if isinstance(styled_string, basestring):
-                if isinstance(styled_string, str):
-                    self._s = styled_string.decode('utf-8')
-                elif isinstance(styled_string, unicode):
-                    self._s = styled_string
-            elif styled_string is None:
-                self._s = u''
-            else:
-                raise ValueError(
-                    u"Invalid input object of type {}".format(
-                        type(styled_string)
-                    )
+            raise ValueError(
+                "Invalid input object of type {}".format(
+                    type(styled_string)
                 )
+            )
         # format string using args and kwargs
         self._plain = self._s.format(*args, **kwargs)
         # extract tokens
@@ -87,7 +72,7 @@ class Styled(object):
     def transform(token):
         """Static method that converts tokens into styled text"""
         _, __, text, styles = token
-        styled_string = u''
+        styled_string = ''
         terminate = True
         for style in styles:
             pos = None
@@ -96,26 +81,26 @@ class Styled(object):
             except ValueError:
                 style_ = style
             try:
-                if pos == u'fg':
-                    styled_string += u'{}[{}m'.format(ESC, FG_COLOURS(style_))
-                elif pos == u'bg':
-                    styled_string += u'{}[{}m'.format(ESC, BG_COLOURS(style_))
-                elif pos == u'no' and style_ == u'end':
+                if pos == 'fg':
+                    styled_string += '{}[{}m'.format(ESC, FG_COLOURS(style_))
+                elif pos == 'bg':
+                    styled_string += '{}[{}m'.format(ESC, BG_COLOURS(style_))
+                elif pos == 'no' and style_ == 'end':
                     terminate = False
-                elif pos == u'yes' and style_ == u'end':
+                elif pos == 'yes' and style_ == 'end':
                     terminate = True
                 else:
-                    styled_string += u'{}[{}m'.format(ESC, STYLE_NAMES[style_])
+                    styled_string += '{}[{}m'.format(ESC, STYLE_NAMES[style_])
             except KeyError:
-                raise StyleError(u"Unknown style '{}'".format(style_))
+                raise StyleError("Unknown style '{}'".format(style_))
         if terminate:
-            return u'{}{}{}'.format(styled_string, text, END)
-        return u'{}{}'.format(styled_string, text)
+            return '{}{}{}'.format(styled_string, text, END)
+        return '{}{}'.format(styled_string, text)
 
     def _transform(self, plain, tokens, invoke=True):
         """Static method to transform the whole string into a styled string"""
         i = 0
-        styled = u''
+        styled = ''
         for token in tokens:
             start, end, text, _ = token
             if invoke:
@@ -140,11 +125,11 @@ class Styled(object):
             styled_text = self.styled_text.match(found_pattern)
             if not styled_text:
                 raise StyleError(
-                    u"Invalid tokens in pattern {}".format(
+                    "Invalid tokens in pattern {}".format(
                         found_pattern)
                 )
             text = styled_text.group('text')
-            styles = styled_text.group('styles').split(u':')
+            styles = styled_text.group('styles').split(':')
             token = (
                 pattern.start() + pos + (pattern.end() - len(found_pattern)),
                 pattern.end() + pos, text, styles
@@ -173,29 +158,29 @@ class Styled(object):
                     pos, style_ = style.split('-')
                 except ValueError:
                     style_ = style
-                if pos == u'fg':
+                if pos == 'fg':
                     fgs.append(style)
-                elif pos == u'bg':
+                elif pos == 'bg':
                     bgs.append(style)
-                elif pos == u'no' and style_ == u'end':
+                elif pos == 'no' and style_ == 'end':
                     no_ends.append(style_)
                 else:
                     other.append(style)
             if len(fgs) > 1:
                 raise StyleError(
-                    u"Multiple foreground styles for text '{}': {}".format(
+                    "Multiple foreground styles for text '{}': {}".format(
                         text, ', '.join(styles)
                     )
                 )
             if len(bgs) > 1:
                 raise StyleError(
-                    u"Multiple background styles for text '{}': {}".format(
+                    "Multiple background styles for text '{}': {}".format(
                         text, ', '.join(styles)
                     )
                 )
             if len(no_ends) > 1:
                 raise StyleError(
-                    u"Multiple no-ends for text '{}': {}".format(
+                    "Multiple no-ends for text '{}': {}".format(
                         text, ', '.join(styles)
                     )
                 )
@@ -212,23 +197,14 @@ class Styled(object):
         return len(self._unstyled)
 
     # string handling
-    if sys.version_info[0] > 2:
-        def __bytes__(self):
-            return self._styled.encode('utf-8')
+    def __bytes__(self):
+        return self._styled.encode('utf-8')
 
-        def __str__(self):
-            return self._styled
-    else:
-        def __str__(self):
-            return self._styled.encode('utf-8')
-
-        def __unicode__(self):
-            return self._styled
+    def __str__(self):
+        return self._styled
 
     def __eq__(self, other):
-        if sys.version_info[0] > 2:
-            return self._unstyled == other
-        return self._unstyled.encode('utf-8') == other
+        return self._unstyled == other
 
     def __add__(self, other):
         """styled + other"""
