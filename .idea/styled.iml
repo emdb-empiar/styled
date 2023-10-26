@@ -5,7 +5,8 @@
       <excludeFolder url="file://$MODULE_DIR$/.tox" />
       <excludeFolder url="file://$MODULE_DIR$/styled.egg-info" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 3.8 (styled)" jdkType="Python SDK" />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="Python 3.12 (styled-py3.12)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>

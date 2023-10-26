@@ -8,7 +8,6 @@
 from __future__ import print_function
 
 import re
-import sys
 
 from .assets import STYLE_NAMES, FG_COLOURS, BG_COLOURS, ESC, END
 
@@ -48,6 +47,9 @@ class Styled:
                     type(styled_string)
                 )
             )
+        # bugfix: escape curly braces
+        if re.search(r'.*?[{].*?[-].*?[}].*?', self._s):
+            self._s = self._s.replace("{", "{{").replace("}", "}}")
         # format string using args and kwargs
         self._plain = self._s.format(*args, **kwargs)
         # extract tokens

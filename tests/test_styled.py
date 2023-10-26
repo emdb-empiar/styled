@@ -102,7 +102,14 @@ class TestStyled(TestCase):
     def test_format(self):
         u = "This is a very {} affair in which {count} people were involved."
         s = Styled(u, 'noble', count=38)
+        print(s)
         self.assertEqual(s, u.format('noble', count=38))
+
+    def test_format2(self):
+        u = "[[ 'yl-4-({4-[(4-methylbenzene-1-sulfonyl)oxy]phenyl}diazenyl)-1H-pyrazol-1-yl]benzene-1,3-diol'|fg-red ]]"
+        s = Styled(u)
+        print(s)
+        self.assertIsInstance(s, Styled)
 
     def test_quotes(self):
         sq = Styled("I have a [[ 'bold \"hair\"'|fg-red ]] face.")

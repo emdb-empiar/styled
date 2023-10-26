@@ -102,3 +102,4 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+/.github/workflows/python-package-local.yml
