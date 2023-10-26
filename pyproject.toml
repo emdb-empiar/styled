@@ -27,11 +27,12 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Terminals",
     "Topic :: Text Processing",
     "Topic :: Text Processing :: Markup",
-    "Topic :: Utilities",
+    "Topic :: Utilities"
 ]
 dependencies = [
 
